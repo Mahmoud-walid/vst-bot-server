@@ -91,16 +91,18 @@ app.listen(port, () => {
 });
 
 // launch the bot
-bot
-  .launch({
-    dropPendingUpdates: true,
-  })
-  .then(() => {
-    console.log('✅ Bot launched successfully!');
-  })
-  .catch((error) => {
-    console.error('❌ Bot launch failed:', error);
-  });
+setTimeout(() => {
+  bot
+    .launch({
+      dropPendingUpdates: true,
+    })
+    .then(() => {
+      console.log('✅ Bot launched successfully!');
+    })
+    .catch((error) => {
+      console.error('❌ Bot launch failed:', error);
+    });
+}, 5000);
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
