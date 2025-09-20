@@ -101,6 +101,10 @@ setTimeout(() => {
     })
     .catch((error) => {
       console.error('❌ Bot launch failed:', error);
+      if (error.code === 'ECONNRESET') {
+        console.log('⚠️ Connection reset. Retrying...');
+        setTimeout(() => bot.launch({ dropPendingUpdates: true }), 5000); // Retry after 5 seconds
+      }
     });
 }, 5000);
 
