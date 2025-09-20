@@ -91,22 +91,16 @@ app.listen(port, () => {
 });
 
 // launch the bot
-setTimeout(() => {
-  bot
-    .launch({
-      dropPendingUpdates: true,
-    })
-    .then(() => {
-      console.log('✅ Bot launched successfully!');
-    })
-    .catch((error) => {
-      console.error('❌ Bot launch failed:', error);
-      if (error.code === 'ECONNRESET') {
-        console.log('⚠️ Connection reset. Retrying...');
-        setTimeout(() => bot.launch({ dropPendingUpdates: true }), 5000); // Retry after 5 seconds
-      }
-    });
-}, 5000);
+bot
+  .launch({
+    dropPendingUpdates: true,
+  })
+  .then(() => {
+    console.log('✅ Bot launched successfully!');
+  })
+  .catch((error) => {
+    console.error('❌ Bot launch failed:', error);
+  });
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
