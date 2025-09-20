@@ -8,6 +8,8 @@ import { UserSessionService } from './services/userSessionService';
 const app = express();
 const port = ENV.PORT;
 
+app.set('trust proxy', 1); // to use the X-Forwarded-For header for IP addresses
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(
