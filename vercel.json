@@ -28,11 +28,6 @@
       "dest": "/api/stats.ts"
     }
   ],
-  "functions": {
-    "api/*.ts": {
-      "runtime": "@vercel/node@3"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }
