@@ -2,33 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/webhook.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/health.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/stats.ts",
+      "src": "src/server.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/webhook",
-      "dest": "/api/webhook.ts"
-    },
-    {
-      "src": "/api/health",
-      "dest": "/api/health.ts"
-    },
-    {
-      "src": "/api/stats",
-      "dest": "/api/stats.ts"
+      "src": "/(.*)",
+      "dest": "src/server.ts"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
