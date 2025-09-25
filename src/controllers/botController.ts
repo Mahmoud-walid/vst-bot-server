@@ -73,19 +73,22 @@ export class BotController {
 
       // create or update user session
       this.userSessionService.createOrUpdateSession(userInfo.userId, {
-        username: userInfo?.username ?? 'undefined',
-        firstName: userInfo?.firstName ?? 'undefined',
-        lastName: userInfo?.lastName ?? 'undefined',
+        username: userInfo?.username ?? 'unknown-username',
+        firstName: userInfo?.firstName ?? 'unknown-firstName',
+        lastName: userInfo?.lastName ?? 'unknown-lastName',
       });
 
       // check if it's a group/channel
-      if (
-        ctx.chat?.type === 'group' ||
-        ctx.chat?.type === 'supergroup' ||
-        ctx.chat?.type === 'channel'
-      ) {
-        const message = this.translate('welcome_group', userInfo.userId);
-        await ctx.reply(message);
+      if (ctx.chat?.type === 'group' || ctx.chat?.type === 'supergroup') {
+        return;
+      }
+
+      if (ctx.chat?.type === 'channel') {
+        const channelWelcomeMessage = this.translate(
+          'welcome_group',
+          userInfo.userId
+        );
+        await ctx.reply(channelWelcomeMessage);
         return;
       }
 
@@ -131,6 +134,7 @@ export class BotController {
 
       await ctx.reply(message, {
         reply_markup: keyboard,
+        parse_mode: 'Markdown',
       });
     } catch (error) {
       console.error('Error in handleLanguageCommand:', error);
@@ -209,6 +213,32 @@ export class BotController {
     }
   }
 
+  public async handleTerminate(ctx: MessageContext): Promise<void> {
+    try {
+      const userInfo = this.getUserInfo(ctx);
+      const session = this.userSessionService.getSession(userInfo.userId);
+
+      const title = this.translate('terminate_confirm_title', userInfo.userId);
+      const message = this.translate(
+        'terminate_confirm_message',
+        userInfo.userId
+      );
+      const keyboard = this.keyboardService.createTerminateConfirmKeyboard(
+        session.language
+      );
+
+      await ctx.reply(`${title}\n\n${message}`, {
+        reply_markup: keyboard,
+        parse_mode: 'Markdown',
+      });
+    } catch (error) {
+      console.error('Error in handleTerminate:', error);
+      const userInfo = this.getUserInfo(ctx);
+      const errorMessage = this.translate('error_occurred', userInfo.userId);
+      await ctx.reply(errorMessage);
+    }
+  }
+
   public async handleCallbackQuery(ctx: CallbackQueryContext): Promise<void> {
     try {
       const data =
@@ -259,9 +289,13 @@ export class BotController {
             'choose_language',
             userInfo.userId
           );
-          const langKeyboard = this.keyboardService.createLanguageKeyboard();
+          const langKeyboard =
+            this.keyboardService.createLanguageKeyboardWithTerminate(
+              session.language
+            );
           await ctx.editMessageText(langMessage, {
             reply_markup: langKeyboard,
+            parse_mode: 'Markdown',
           });
           break;
 
@@ -312,6 +346,65 @@ export class BotController {
             parse_mode: 'Markdown',
           });
           break;
+
+        case 'terminate_confirm':
+          const terminateTitle = this.translate(
+            'terminate_confirm_title',
+            userInfo.userId
+          );
+          const terminateMessage = this.translate(
+            'terminate_confirm_message',
+            userInfo.userId
+          );
+          const terminateKeyboard =
+            this.keyboardService.createTerminateConfirmKeyboard(
+              session.language
+            );
+          await ctx.editMessageText(
+            `${terminateTitle}\n\n${terminateMessage}`,
+            {
+              reply_markup: terminateKeyboard,
+              parse_mode: 'Markdown',
+            }
+          );
+          break;
+
+        case 'terminate_execute':
+          // Terminate the user session
+          this.userSessionService.terminateSession(userInfo.userId);
+          const terminateSuccessMessage = this.translate(
+            'terminate_success',
+            userInfo.userId
+          );
+
+          // Send final message without keyboard (session is terminated)
+          await ctx.editMessageText(terminateSuccessMessage, {
+            parse_mode: 'Markdown',
+          });
+
+          // Answer callback query with confirmation
+          await ctx.answerCbQuery('✅ Session terminated successfully');
+          break;
+
+        case 'terminate_cancel': {
+          // Go back to main menu
+          const cancelMessage = this.translate(
+            'terminate_cancelled',
+            userInfo.userId
+          );
+          const helpMessage = this.translate('help', userInfo.userId);
+          const mainKeyboard = this.keyboardService.createMainMenuKeyboard(
+            session.language
+          );
+
+          await ctx.editMessageText(`${cancelMessage}\n\n${helpMessage}`, {
+            reply_markup: mainKeyboard,
+            parse_mode: 'Markdown',
+          });
+
+          await ctx.answerCbQuery('✅ Termination cancelled');
+          break;
+        }
       }
 
       await ctx.answerCbQuery();
@@ -344,11 +437,30 @@ export class BotController {
 
         if (botMember) {
           const userInfo = this.getUserInfo(ctx);
-          const welcomeMessage = this.translate(
+          const groupWelcomeMessage = this.translate(
             'welcome_group',
             userInfo.userId
           );
-          await ctx.reply(welcomeMessage);
+          await ctx.reply(groupWelcomeMessage);
+
+          this.userSessionService.createOrUpdateSession(userInfo.userId, {
+            username: userInfo.username ?? 'unknown-username',
+            firstName: userInfo.firstName ?? 'unknown-firstName',
+            lastName: userInfo.lastName ?? 'unknown-lastName',
+          });
+
+          try {
+            const privateThankYouMessage = this.translate(
+              'thanks_for_adding',
+              userInfo.userId
+            );
+
+            const { bot } = await import('../bot/telegramBot');
+
+            bot.telegram
+              .sendMessage(userInfo.userId, privateThankYouMessage)
+              .catch(() => {});
+          } catch (error) {}
         }
       }
     } catch (error) {
