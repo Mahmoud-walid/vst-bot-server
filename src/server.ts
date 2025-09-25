@@ -91,17 +91,17 @@ app.listen(port, () => {
 });
 
 // launch the bot
-// bot
-//   .launch({
-//     dropPendingUpdates: true,
-//   })
-//   .then(() => {
-//     console.log('✅ Bot launched successfully!');
-//   })
-//   .catch((error) => {
-//     console.error('❌ Bot launch failed:', error);
-//   });
+bot
+  .launch({
+    dropPendingUpdates: true,
+  })
+  .then(() => {
+    console.log('✅ Bot launched successfully!');
+  })
+  .catch((error) => {
+    console.error('❌ Bot launch failed:', error);
+  });
 
-// // Enable graceful stop
-// process.once('SIGINT', () => bot.stop('SIGINT'));
-// process.once('SIGTERM', () => bot.stop('SIGTERM'));
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
