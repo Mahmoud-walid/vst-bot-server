@@ -1,6 +1,8 @@
 import { Telegraf } from 'telegraf';
 import { ENV } from '../config/env';
 import { BotController } from '../controllers/botController';
+import { UserSessionService } from '../services/userSessionService';
+import { TranslationService } from '../services/translationService';
 
 export const bot = new Telegraf(ENV.TELEGRAM_TOKEN);
 const botController = BotController.getInstance();
@@ -54,6 +56,14 @@ bot.command('creator', async (ctx) => {
   }
 });
 
+bot.command('terminate', async (ctx) => {
+  if ('text' in ctx.message!) {
+    await botController.handleTerminate(
+      ctx as Parameters<typeof botController.handleTerminate>[0]
+    );
+  }
+});
+
 // callback queries
 bot.on('callback_query', async (ctx) => {
   await botController.handleCallbackQuery(
@@ -64,6 +74,53 @@ bot.on('callback_query', async (ctx) => {
 // new chat members (when bot is added to group)
 bot.on('new_chat_members', async (ctx) => {
   await botController.handleNewChatMember(ctx);
+});
+
+bot.on('my_chat_member', async (ctx) => {
+  try {
+    const chatMember = ctx.myChatMember;
+    const chat = ctx.chat;
+
+    if (
+      chat.type === 'channel' &&
+      chatMember.new_chat_member.status === 'administrator'
+    ) {
+      const userInfo = {
+        userId: chatMember.from.id,
+        username: chatMember.from.username,
+        firstName: chatMember.from.first_name,
+        lastName: chatMember.from.last_name,
+      };
+
+      // const botController = BotController.getInstance();
+      const userSessionService = UserSessionService.getInstance();
+      const translationService = TranslationService.getInstance();
+
+      userSessionService.createOrUpdateSession(userInfo.userId, {
+        username: userInfo.username ?? 'unknown-username',
+        firstName: userInfo.firstName ?? 'unknown-firstName',
+        lastName: userInfo.lastName ?? 'unknown-lastName',
+      });
+
+      const session = userSessionService.getSession(userInfo.userId);
+      const channelWelcomeMessage = translationService.translate(
+        'welcome_group',
+        session.language
+      );
+
+      await ctx.reply(channelWelcomeMessage);
+
+      try {
+        const privateThankYouMessage = translationService.translate(
+          'thanks_for_adding',
+          session.language
+        );
+        await bot.telegram.sendMessage(userInfo.userId, privateThankYouMessage);
+      } catch (error) {}
+    }
+  } catch (error) {
+    console.error('Error in my_chat_member handler:', error);
+  }
 });
 
 // unknown commands
