@@ -45,6 +45,22 @@ export class UserSessionService {
     this.userSessions.set(userId, session);
   }
 
+  public terminateSession(userId: number): boolean {
+    const wasDeleted = this.userSessions.delete(userId);
+    return wasDeleted;
+  }
+
+  public resetSession(userId: number): UserSession {
+    // create a fresh session with default values
+    const newSession: UserSession = {
+      userId,
+      language: 'EN',
+    };
+
+    this.userSessions.set(userId, newSession);
+    return newSession;
+  }
+
   public getAllSessions(): UserSession[] {
     return Array.from(this.userSessions.values());
   }
