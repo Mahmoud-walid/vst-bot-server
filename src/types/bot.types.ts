@@ -24,6 +24,15 @@ export interface BotTranslations {
   language_changed: string;
   welcome_group: string;
   thanks_for_adding: string;
+  add_to_group_message: string;
+  add_to_channel_instruction: string;
+  terminate: string;
+  terminate_confirm_title: string;
+  terminate_confirm_message: string;
+  terminate_success: string;
+  terminate_cancelled: string;
+  confirm_terminate: string;
+  cancel_terminate: string;
 }
 
 export interface UserSession {

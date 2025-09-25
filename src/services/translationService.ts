@@ -1,3 +1,4 @@
+import { ENV } from '../config/env';
 import { LanguageKey } from '../config/languages';
 import { BotTranslations } from '../types/bot.types';
 
@@ -13,6 +14,7 @@ const translations: Record<LanguageKey, BotTranslations> = {
 🔹 /addtogroup - Add bot to a group
 🔹 /instructions - Detailed bot instructions
 🔹 /creator - About the creator
+🔹 /terminate - End current bot session
 
 🌟 *Main Features:*
 • Multi-language support (13+ languages)
@@ -79,10 +81,24 @@ Feel free to reach out for collaborations or questions! 🚀
     welcome_group:
       '🎉 Thanks for adding me to this group!\n\nUse /help to see what I can do!',
     thanks_for_adding: '🙏 Thank you for adding me!',
+    add_to_group_message:
+      '🚀 *Add me to your group or channel!*\n\nUse the buttons below to add me:',
+    add_to_channel_instruction:
+      '_For channels: After adding me as an admin, please send `/start` in the channel to activate me._',
+    terminate: '🔴 Terminate',
+    terminate_confirm_title: '⚠️ *Confirm Termination*',
+    terminate_confirm_message:
+      'Are you sure you want to terminate the bot session?\n\nThis will:\n• Clear your current session\n• Reset language preferences\n• Return to initial state\n\nYou can restart anytime with /start',
+    terminate_success:
+      '✅ *Session Terminated*\n\nYour session has been successfully terminated.\nAll preferences have been reset.\n\nTo restart the bot, use /start command.',
+    terminate_cancelled:
+      '✅ *Termination Cancelled*\n\nYour session remains active.\nYou can continue using the bot normally.',
+    confirm_terminate: '🔴 Yes, Terminate',
+    cancel_terminate: '✅ Cancel',
   },
   AR: {
     welcome:
-      '🎉 أهلاً بك في البوت المتطور!\n\nأنا هنا لمساعدتك بميزات متعددة ودعم العديد من اللغات.\n\nاختر لغتك المفضلة أدناه:',
+      '🎉 أهلاً بك في بوت VST!\n\nأنا هنا لمساعدتك لمساعدتك في استخدام اكستنشن vsCode الخاصة بنا لمراقبة الموظفين.\n\nاختر لغتك المفضلة أدناه:',
     help: `🤖 *أوامر ومميزات البوت*
 
 🔹 /start - رسالة الترحيب واختيار اللغة
@@ -91,17 +107,12 @@ Feel free to reach out for collaborations or questions! 🚀
 🔹 /addtogroup - إضافة البوت لمجموعة
 🔹 /instructions - تعليمات البوت المفصلة
 🔹 /creator - عن صانع البوت
-
-🌟 *المميزات الرئيسية:*
-• دعم متعدد اللغات (+13 لغة)
-• تكامل سهل مع المجموعات/القنوات
-• واجهة سهلة الاستخدام  
-• نظام مساعدة شامل
+🔹 /terminate - إنهاء الجلسة الحالية
 
 اختر ما تحتاجه من القائمة أدناه! 👇`,
     language_selected: '✅ تم تعيين اللغة إلى العربية',
     choose_language: '🌍 اختر لغتك المفضلة:',
-    add_to_group: '👥 إضافة البوت للمجموعة/القناة',
+    add_to_group: '👥 إضافة البوت للمجموعة',
     add_to_channel: '📢 إضافة للقناة',
     instructions_title: '📋 *تعليمات ودليل البوت*',
     instructions_content: `🔸 *كيفية استخدام هذا البوت:*
@@ -112,37 +123,36 @@ Feel free to reach out for collaborations or questions! 🚀
 4️⃣ **المجموعات**: أضف البوت للمجموعات باستخدام /addtogroup
 5️⃣ **التعليمات**: احصل على مساعدة مفصلة باستخدام /instructions
 
-🔸 *نظرة على المميزات:*
-• واجهة متعددة اللغات (+13 لغة)
-• نظام أوامر ذكي
-• تكامل المجموعات/القنوات
-• تنقل سهل للمستخدم
-• تبديل فوري للغة
-
-🔸 *نصائح لأفضل تجربة:*
-• استخدم لوحات المفاتيح للتنقل السهل
-• الأوامر تعمل في المحادثات الخاصة والمجموعات
-• البوت يتذكر تفضيل لغتك
-• جميع المميزات تعمل عبر اللغات المختلفة
+🔸 **عن اكستنشن VST:**
+ال VST هي اكستنشن vsCode تقوم بمراقبة الموظفين اثناء عملهم على مشاريع الشركة. بحيث يقوم البوت بإرسال رسائل (في القناة او الجروب) بال logs اثناء عمل المطور على فايل والقيام ب save على الفايل.
+وايضاً الأكستنشن تعمل ب GitHub Actions و من خلال هذا البوت (سوف يأتي قريباً) تقوم الأكستنشن بإرسال عمليات ال commit - push - pull - new branch - PR - issue وهكذا
 
 تحتاج مساعدة أكثر؟ تواصل مع المطور! 👨‍💻`,
     creator_info_title: '👨‍💻 *عن صانع البوت*',
-    creator_info_content: `🔸 **معلومات المطور:**
+    creator_info_content: `🔸 *معلومات المطور:*
 
 👤 **الاسم**: محمود وليد
-🔗 **اسم المستخدم**: @mahmoudWalidJS
+🔗 **اسم المستخدم**: ${ENV.CREATOR_USERNAME.replace(/_/g, '\\_')}
 💻 **التخصص**: مطور React - الواجهات الأمامية
-🛠️ **التقنيات**: React, TypeScript, React Native, Node.js
 ⚡ **الخبرة**: أكثر من 3 سنوات في تطوير الويب
 🌍 **الموقع**: مصر
-🎯 **الشغف**: JavaScript, TypeScript, وتقنيات الويب الحديثة
+🛠️ **حساب جيتهاب**: [Mahmoud-walid](https://github.com/Mahmoud-walid)
+🎯 **إكس (تويتر)**: [mahmoudWalid\_JS](https://x.com/mahmoudWalid_JS)
 
-🔸 **عن هذا المشروع:**
-تم إنشاء هذا البوت باستخدام TypeScript الحديث وإطار عمل Telegraf، مع هندسة متقدمة وأمان نوعي كامل ودعم متعدد اللغات.
+🔸 **عن اكستنشن VST:**
+الـ VST هي اكستنشن VSCode تقوم بمراقبة الموظفين أثناء عملهم على مشاريع الشركة.
+يقوم البوت بإرسال رسائل (في القناة أو الجروب) تحتوي على logs عند قيام المطور بعمل *حفظ (save)* للملف.
+كما تعمل الأكستنشن مع GitHub Actions، وقريبًا سيتم دعم إرسال العمليات التالية من خلال بوت أخر (سوف يأتي قريباً):
+- commit
+- push
+- pull
+- new branch
+- PR
+- issue
 
 لا تتردد في التواصل للتعاون أو الأسئلة! 🚀
 
-**للتواصل**: @mahmoudWalidJS`,
+**للتواصل**: ${ENV.CREATOR_USERNAME.replace(/_/g, '\\_')}`,
     bot_features: '⭐ مميزات البوت',
     how_to_use: '❓ كيفية الاستخدام',
     support_info: '🆘 الدعم',
@@ -157,6 +167,20 @@ Feel free to reach out for collaborations or questions! 🚀
     welcome_group:
       '🎉 شكراً لإضافتي إلى هذه المجموعة!\n\nاستخدم /help لرؤية ما يمكنني فعله!',
     thanks_for_adding: '🙏 شكراً لإضافتي!',
+    add_to_group_message:
+      '🚀 *أضفني إلى مجموعتك أو قناتك!*\\n\\nاستخدم الأزرار أدناه لإضافتي:',
+    add_to_channel_instruction:
+      '_للقنوات: بعد إضافتي كمسؤول، يرجى إرسال `/start` في القناة لتفعيلي._',
+    terminate: '🔴 إنهاء',
+    terminate_confirm_title: '⚠️ *تأكيد الإنهاء*',
+    terminate_confirm_message:
+      'هل أنت متأكد من رغبتك في إنهاء جلسة البوت؟\n\nسيؤدي هذا إلى:\n• مسح جلستك الحالية\n• إعادة تعيين تفضيلات اللغة\n• العودة للحالة الأولية\n\nيمكنك إعادة البدء في أي وقت باستخدام /start',
+    terminate_success:
+      '✅ *تم إنهاء الجلسة*\n\nتم إنهاء جلستك بنجاح.\nتم إعادة تعيين جميع التفضيلات.\n\nلإعادة تشغيل البوت، استخدم الأمر /start.',
+    terminate_cancelled:
+      '✅ *تم إلغاء الإنهاء*\n\nجلستك ما زالت نشطة.\nيمكنك الاستمرار في استخدام البوت بشكل طبيعي.',
+    confirm_terminate: 'نعم، أنهي',
+    cancel_terminate: 'إلغاء',
   },
   RU: {
     welcome:
@@ -236,6 +260,15 @@ Feel free to reach out for collaborations or questions! 🚀
     welcome_group:
       '🎉 Спасибо за добавление меня в эту группу!\n\nИспользуйте /help чтобы увидеть что я могу делать!',
     thanks_for_adding: '🙏 Спасибо за добавление меня!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   // adding shortened versions for other languages to keep the artifact manageable
   ES: {
@@ -263,6 +296,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ ¡Idioma cambiado exitosamente!',
     welcome_group: '🎉 ¡Gracias por añadirme a este grupo!',
     thanks_for_adding: '🙏 ¡Gracias por añadirme!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   // adding other languages with basic translations
   PT: {
@@ -289,6 +331,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Idioma alterado!',
     welcome_group: '🎉 Obrigado por me adicionar!',
     thanks_for_adding: '🙏 Obrigado!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   TR: {
     welcome: "🎉 Gelişmiş Bot'a Hoş Geldiniz!",
@@ -314,6 +365,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Dil değiştirildi!',
     welcome_group: '🎉 Beni eklediğiniz için teşekkürler!',
     thanks_for_adding: '🙏 Teşekkürler!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   DE: {
     welcome: '🎉 Willkommen beim erweiterten Bot!',
@@ -339,6 +399,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Sprache geändert!',
     welcome_group: '🎉 Danke fürs Hinzufügen!',
     thanks_for_adding: '🙏 Danke!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   FR: {
     welcome: '🎉 Bienvenue dans le Bot Avancé!',
@@ -364,6 +433,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Langue changée!',
     welcome_group: "🎉 Merci de m'avoir ajouté!",
     thanks_for_adding: '🙏 Merci!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   IT: {
     welcome: '🎉 Benvenuto nel Bot Avanzato!',
@@ -389,6 +467,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Lingua cambiata!',
     welcome_group: '🎉 Grazie per avermi aggiunto!',
     thanks_for_adding: '🙏 Grazie!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   JA: {
     welcome: '🎉 アドバンスドボットへようこそ！',
@@ -414,6 +501,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ 言語が変更されました！',
     welcome_group: '🎉 追加していただきありがとうございます！',
     thanks_for_adding: '🙏 ありがとうございます！',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   KO: {
     welcome: '🎉 고급 봇에 오신 것을 환영합니다!',
@@ -439,6 +535,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ 언어가 변경되었습니다!',
     welcome_group: '🎉 추가해주셔서 감사합니다!',
     thanks_for_adding: '🙏 감사합니다!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   ZH: {
     welcome: '🎉 欢迎来到高级机器人！',
@@ -464,6 +569,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ 语言已更改！',
     welcome_group: '🎉 谢谢添加我！',
     thanks_for_adding: '🙏 谢谢！',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
   'PT-BR': {
     welcome: '🎉 Bem-vindo ao Bot Avançado!',
@@ -489,6 +603,15 @@ Feel free to reach out for collaborations or questions! 🚀
     language_changed: '✅ Idioma alterado com sucesso!',
     welcome_group: '🎉 Obrigado por me adicionar ao grupo!',
     thanks_for_adding: '🙏 Obrigado por me adicionar!',
+    add_to_group_message: '',
+    add_to_channel_instruction: '',
+    terminate: '',
+    terminate_confirm_title: '',
+    terminate_confirm_message: '',
+    terminate_success: '',
+    terminate_cancelled: '',
+    confirm_terminate: '',
+    cancel_terminate: '',
   },
 };
 
